@@ -1,0 +1,52 @@
+
+Currency Exchange:
+http://localhost:8000/currency-exchange/from/USD/to/INR
+
+Currency Conversion End Point:
+http://localhost:8100/currency-conversion/from/USD/to/INR/quantity/3
+
+Config Server End Points:
+http://localhost:8888/application/default
+http://localhost:8888/currency-conversion-service/default
+http://localhost:8888/currency-exchange/default
+http://localhost:8888/currency-exchange/dev
+
+Naming Server/Eureka Server End Point:
+http://localhost:8761/
+
+API Gateway End Points:
+http://localhost:8765/currency-exchange/from/USD/to/INR
+http://localhost:8765/currency-conversion/feign/from/USD/to/INR/quantity/10
+http://localhost:8765/currency-conversion/from/USD/to/INR/quantity/10
+http://localhost:8765/currency-conversion/lb/from/USD/to/INR/quantity/10
+
+
+
+
+
+
+
+For config server:
+http://localhost:8888/application/default
+http://localhost:8888/currency-conversion-service/default
+http://localhost:8888/currency-exchange/default
+http://localhost:8888/currency-exchange/dev
+
+For Naming server/Eureka Server:
+http://localhost:8761/
+
+To Test the load balancing:
+http://localhost:8100/currency-conversion/feign/from/USD/to/INR/quantity/10
+
+zipkin server:
+http://localhost:9411/zipkin/
+
+API Gateway:
+http://localhost:8765/currency-exchange/from/USD/to/INR
+using feign client
+http://localhost:8765/currency-conversion/feign/from/USD/to/INR/quantity/10
+Using rest template(With Hardcoded) This wont work with docker-compose as the host will be different
+http://localhost:8765/currency-conversion/from/USD/to/INR/quantity/10
+Using rest template(With Loadbalancer)
+http://localhost:8765/currency-conversion/lb/from/USD/to/INR/quantity/10
+

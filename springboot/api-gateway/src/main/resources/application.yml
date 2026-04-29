@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: api-gateway
+  main:
+    web-application-type: reactive
+  web:
+    resources:
+      add-mappings: false
+  cloud:
+    discovery:
+      reactive:
+        enabled: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+server:
+  port: 8765
+
+eureka:
+  hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+    # Eureka Client Configuration Always prefer IP address for registration and discovery
+    # To avoid issues in environments where hostname resolution might be problematic, such as Docker or Kubernetes
+  instance:
+    ip-address: 127.0.0.1
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+# Show trace ID in logs
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+
+
+
+
+
