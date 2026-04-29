@@ -1,0 +1,59 @@
+# =========================
+# Build outputs
+# =========================
+target/
+build/
+out/
+
+# =========================
+# IDE-specific folders
+# =========================
+.idea/
+.vscode/
+.project
+.classpath
+.settings/
+
+# =========================
+# OS-generated files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# Temporary files
+# =========================
+tmp/
+*.tmp
+*.swp
+
+# =========================
+# Spring Boot / Application
+# =========================
+spring.log
+hs_err_pid*
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
+
+# =========================
+# Maven
+# =========================
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# =========================
+# Gradle
+# =========================
+.gradle/
+gradle/
+``
