@@ -1,0 +1,125 @@
+version: '3.8'
+
+services:
+
+  naming-server:
+    image: naming-server:latest
+    ports:
+      - "8761:8761"
+    networks:
+      - microservice-network
+  config-server:
+    image: config-server:latest
+    ports:
+      - "8888:8888"
+    networks:
+      - microservice-network
+    depends_on:
+      naming-server:
+        condition: service_started
+    environment:
+#      JAVA_TOOL_OPTIONS: "-Xmx512m -XX:+ExitOnOutOfMemoryError"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
+      #SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+
+  zipkin:
+    image: openzipkin/zipkin:latest
+    ports:
+      - "9411:9411"
+    networks:
+      - microservice-network
+
+  currency-exchange:
+    image: currency-exchange:latest
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    ports:
+      - "8000:8000"
+    networks:
+      - microservice-network
+    depends_on:
+      naming-server:
+        condition: service_started
+      config-server:
+        condition: service_started
+    environment:
+#      JAVA_TOOL_OPTIONS: "-Xmx1024m -XX:+ExitOnOutOfMemoryError"
+      SPRING_PROFILES_ACTIVE: dev
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SPRING_ZIPKIN_BASE_URL: http://zipkin:9411
+      SPRING_ZIPKIN_ENABLED: "true"
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
+
+  currency-conversion-service:
+    image: currency-conversion-service:latest
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    ports:
+      - "8100:8100"
+    networks:
+      - microservice-network
+    depends_on:
+      naming-server:
+        condition: service_started
+      config-server:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      SPRING_ZIPKIN_BASE_URL: http://zipkin:9411
+      SPRING_ZIPKIN_ENABLED: "true"
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
+
+#  currency-conversion-service:
+#    image: currency-conversion-service:latest
+#    ports:
+#      - "8100:8100"
+#    networks:
+#      - microservice-network
+#    depends_on:
+#      naming-server:
+#        condition: service_started
+#      config-server:
+#        condition: service_started
+#      currency-exchange:
+#        condition: service_started
+#    environment:
+#      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka
+#      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+#      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+#
+  api-gateway:
+    image: api-gateway:latest
+    ports:
+      - "8765:8765"
+    networks:
+      - microservice-network
+    depends_on:
+      naming-server:
+        condition: service_started
+      config-server:
+        condition: service_started
+      currency-exchange:
+        condition: service_started
+      currency-conversion-service:
+        condition: service_started
+      zipkin:
+        condition: service_started
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+
+networks:
+  microservice-network:
+    driver: bridge
