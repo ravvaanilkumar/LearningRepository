@@ -1,6 +1,68 @@
-# Normalize all text files to LF in the repository
+###############################################################################
+# Global defaults
+###############################################################################
+
+# Treat all files as text and normalize to LF in the repository
 * text=auto eol=lf
 
-# Windows-specific scripts
-*.cmd eol=crlf
-*.bat eol=crlf
+
+###############################################################################
+# Windows-specific scripts (must use CRLF)
+###############################################################################
+
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+
+###############################################################################
+# Shell scripts (Linux/Mac)
+###############################################################################
+
+*.sh text eol=lf
+
+
+###############################################################################
+# Java / Spring Boot / Config files
+###############################################################################
+
+*.java       text eol=lf
+*.properties text eol=lf
+*.yml        text eol=lf
+*.yaml       text eol=lf
+*.xml        text eol=lf
+*.gradle     text eol=lf
+*.sql        text eol=lf
+
+
+###############################################################################
+# Build & tooling
+###############################################################################
+
+pom.xml                  text eol=lf
+mvnw                     text eol=lf
+.mvn/wrapper/*.properties text eol=lf
+
+
+###############################################################################
+# Git / Meta
+###############################################################################
+
+.gitattributes text eol=lf
+.gitignore     text eol=lf
+
+
+###############################################################################
+# Binary files (never modify line endings)
+###############################################################################
+
+*.jar     binary
+*.war     binary
+*.ear     binary
+*.zip     binary
+*.gz      binary
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.pdf     binary
